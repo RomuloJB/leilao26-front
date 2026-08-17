@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 
-export default function Pessoa(){
+function Pessoa(){
     const[pessoas, setPessoas] = useState([]);
 
     useEffect(() => {
@@ -42,3 +42,4 @@ export default function Pessoa(){
         </div>
     );
 }
+export default Pessoa;

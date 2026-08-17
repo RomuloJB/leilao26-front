@@ -4,6 +4,15 @@ import axios from "axios";
 export default function Leilao() {
 
     const[leiloes, setLeiloes] = useState([])
+    
+    const handleDelete = (id, titulo) => {
+        const confirmar = window.confirm(
+            `Tem certeza que deseja excluir o leilão ${titulo}?`
+        );
+        if(confirmar) {
+            console.log("Leilão de id ${id}, excluído com sucesso!")
+        }
+    }
 
     useEffect(() => {
         axios.get("http://localhost:8080/leilao").then(response => {
@@ -42,6 +51,9 @@ export default function Leilao() {
                             <td>{leilao.status}</td>
                             <td>{leilao.valorIncremento}</td>
                             <td>{leilao.lanceMinimo}</td>
+                            <button onClick={() => {handleDelete(leilao.id, leilao.titulo)}}>
+                                Excluir
+                            </button>
                         </tr>
                     ))}
                 </tbody>
