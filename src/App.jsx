@@ -2,9 +2,11 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import Login from './pages/Login';
+import Login from './pages/login/Login.jsx';
+import Cadastro from './pages/cadastro/Cadastro.jsx';
+import Home from './pages/home/Home.jsx';
 
-import Categoria from './components/categoria/Categoria';
+//import Categoria from './components/categoria/Categoria';
 
 
 function LogoutButton() {
@@ -21,9 +23,23 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Home: pública, mas o card de "Gado" leva a uma rota protegida */}
+          <Route path="/" element={<Home />} />
+
           <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Cadastro />} />
 
           {/* Rotas protegidas: só acessíveis após login */}
+          <Route
+            path="/leiloes/gado"
+            element={
+              <ProtectedRoute>
+                {/* <LeilaoGado /> */}
+                <div>Leilões de Gado</div>
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/admin"
             element={
@@ -34,9 +50,6 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* Rota pública, ex.: home / lista de leilões */}
-          {/* <Route path="/" element={<Home />} /> */}
         </Routes>
       </AuthProvider>
     </BrowserRouter>

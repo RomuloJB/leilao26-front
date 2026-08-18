@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { login as loginService } from '../services/authService';
+import { login as loginService, cadastrar as cadastrarService } from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -20,13 +20,23 @@ export function AuthProvider({ children }) {
     setCarregando(false);
   }, []);
 
-  async function login(username, senha) {
-    const dados = await loginService(username, senha);
+  function salvarSessao(dados) {
     const usuarioLogado = { id: dados.id, username: dados.username };
-
     localStorage.setItem('token', dados.token);
     localStorage.setItem('usuario', JSON.stringify(usuarioLogado));
     setUsuario(usuarioLogado);
+  }
+
+  async function login(username, senha) {
+    const dados = await loginService(username, senha);
+    salvarSessao(dados);
+  }
+
+  // O back-end já devolve um token no cadastro (igual ao login), então o
+  // usuário fica autenticado automaticamente assim que se cadastra.
+  async function cadastrar(dadosCadastro) {
+    const dados = await cadastrarService(dadosCadastro);
+    salvarSessao(dados);
   }
 
   function logout() {
@@ -40,6 +50,7 @@ export function AuthProvider({ children }) {
     autenticado: !!usuario,
     carregando,
     login,
+    cadastrar,
     logout,
   };
 
