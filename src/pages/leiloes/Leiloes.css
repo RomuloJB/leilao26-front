@@ -1,0 +1,340 @@
+* {
+    box-sizing: border-box;
+}
+
+.leiloes-page {
+    min-height: 100vh;
+    background: #f5f7f4;
+    color: #243126;
+}
+
+.leiloes-header {
+    min-height: 72px;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    border-bottom: 1px solid #e4e8e3;
+}
+
+.leiloes-logo {
+    color: #285430;
+    font-size: 1.45rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.leiloes-header-acoes {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.botao-voltar {
+    color: #526155;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.botao-voltar:hover {
+    color: #285430;
+}
+
+.botao-criar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #2f6b3a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.botao-criar:hover {
+    background: #24562e;
+    transform: translateY(-1px);
+}
+
+.leiloes-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 45px 25px;
+}
+
+.leiloes-topo {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 35px;
+}
+
+.leiloes-subtitulo {
+    color: #4f8a57;
+    font-weight: 700;
+    margin: 0 0 6px;
+}
+
+.leiloes-topo h1 {
+    margin: 0;
+    font-size: 2.2rem;
+}
+
+.barra-busca {
+    width: 100%;
+    max-width: 450px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    background: white;
+    border: 1px solid #dce2dc;
+    border-radius: 9px;
+}
+
+.barra-busca span {
+    font-size: 1.4rem;
+    color: #6c766e;
+}
+
+.barra-busca input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    background: transparent;
+}
+
+.resultado-busca {
+    color: #6a746c;
+    margin-bottom: 18px;
+}
+
+.leiloes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 25px;
+}
+
+.leilao-card {
+    overflow: hidden;
+    background: white;
+    border: 1px solid #e1e6e0;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    transition: 0.2s;
+}
+
+.leilao-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(27, 54, 31, 0.12);
+}
+
+.leilao-imagem {
+    height: 190px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8efe6;
+}
+
+.leilao-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.leilao-imagem > span:first-child {
+    font-size: 5rem;
+}
+
+.status {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #68746a;
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.status.aberto {
+    background: #2f8a45;
+}
+
+.status.agendado {
+    background: #c28a20;
+}
+
+.status.encerrado {
+    background: #68746a;
+}
+
+.status.cancelado {
+    background: #b64242;
+}
+
+.leilao-card-conteudo {
+    padding: 20px;
+}
+
+.leilao-card h2 {
+    margin: 0 0 10px;
+    font-size: 1.25rem;
+}
+
+.leilao-descricao {
+    min-height: 48px;
+    margin: 0 0 20px;
+    color: #657067;
+    line-height: 1.5;
+}
+
+.leilao-informacoes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding: 15px 0;
+    border-top: 1px solid #edf0ed;
+    border-bottom: 1px solid #edf0ed;
+}
+
+.leilao-informacoes div,
+.leilao-valores div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-label,
+.leilao-valores span {
+    color: #7a847c;
+    font-size: 0.78rem;
+}
+
+.leilao-informacoes strong {
+    font-size: 0.85rem;
+}
+
+.leilao-valores {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding: 18px 0;
+}
+
+.leilao-valores strong {
+    color: #285430;
+    font-size: 1rem;
+}
+
+.leilao-acoes {
+    display: flex;
+    gap: 10px;
+}
+
+.botao-detalhes,
+.botao-excluir {
+    flex: 1;
+    padding: 10px;
+    border-radius: 7px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.botao-detalhes {
+    background: #eef5ee;
+    color: #2d6738;
+    border: 1px solid #d8e7d8;
+}
+
+.botao-excluir {
+    background: white;
+    color: #b54141;
+    border: 1px solid #e5bcbc;
+}
+
+.botao-excluir:hover {
+    background: #fff3f3;
+}
+
+.estado-pagina,
+.estado-vazio,
+.estado-erro {
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.estado-vazio-icone {
+    font-size: 5rem;
+}
+
+.estado-vazio h2,
+.estado-erro h3 {
+    margin-bottom: 5px;
+}
+
+.estado-vazio p,
+.estado-erro p {
+    max-width: 500px;
+    color: #687269;
+}
+
+.estado-vazio .vazio {
+    margin-top: 15px;
+}
+
+.estado-erro {
+    color: #a33d3d;
+}
+
+.loading-spinner {
+    width: 38px;
+    height: 38px;
+    border: 4px solid #dce8dd;
+    border-top-color: #2f6b3a;
+    border-radius: 50%;
+    animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 700px) {
+    .leiloes-header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .leiloes-topo {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .barra-busca {
+        max-width: none;
+    }
+
+    .leilao-informacoes {
+        grid-template-columns: 1fr;
+    }
+}

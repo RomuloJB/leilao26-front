@@ -1,14 +1,16 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider} from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/login/Login.jsx';
 import Cadastro from './pages/cadastro/Cadastro.jsx';
 import Home from './pages/home/Home.jsx';
+import Leiloes from './pages/leiloes/Leiloes.jsx';
+import NovoLeilao from "./components/leilao/NovoLeilao";
 
 //import Categoria from './components/categoria/Categoria';
 
-
+/*
 function LogoutButton() {
   const { logout } = useAuth();
   return (
@@ -16,7 +18,7 @@ function LogoutButton() {
       Sair
     </button>
   );
-}
+}*/
 
 export default function App() {
   return (
@@ -34,10 +36,18 @@ export default function App() {
             path="/leiloes/gado"
             element={
               <ProtectedRoute>
-                {/* <LeilaoGado /> */}
-                <div>Leilões de Gado</div>
+                <Leiloes/>
               </ProtectedRoute>
             }
+          />
+
+          <Route
+            path="/leiloes/novo"
+              element={
+                <ProtectedRoute>
+                  <NovoLeilao />
+                </ProtectedRoute>
+              }
           />
 
           <Route
