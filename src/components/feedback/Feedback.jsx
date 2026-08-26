@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import Api from '../../api/axiosInstance';
 
 export default function Feedback(){
     const[feedbacks, setFeedbacks] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8080/feedback").then(response => {
+        Api.get("/feedback").then(response => {
             setFeedback(response.data)
             console.log(response.data)
         })

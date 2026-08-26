@@ -34,7 +34,6 @@
   color: #d0e6cf;
   background: #0b3d13;
   text-decoration: none;
-  cursor: pointer;
   transition: filter 0.15s ease;
 }
 
@@ -127,6 +126,7 @@
 .categoria-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 14px 28px  rgba(10, 40, 13, 0.14);
+  cursor: default;
 }
 
 .categoria-card-icone {
@@ -145,4 +145,20 @@
   margin: 0;
   font-size: 0.85rem;
   color: #66a464;
+}
+
+.clique-aqui {
+  font-size: 1rem;
+  font-weight:700;
+  color: #ffffff;
+  background-color: #218b1d;
+  border-radius: 100px;
+  padding: 5px 10px;
+}
+
+.clique-aqui:hover{
+  background-color: #0b3d13;
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px  rgba(10, 40, 13, 0.14);
+  cursor: pointer;
 }

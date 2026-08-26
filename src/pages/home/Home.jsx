@@ -17,6 +17,10 @@ const categorias = [
 export default function Home() {
   const { autenticado, usuario, logout } = useAuth();
 
+  const atual = new Date();
+  const dataAtual = atual.toLocaleDateString("pt-BR");
+  const horaAtual = atual.toLocaleTimeString("pt-BR");
+
   return (
     <div className="home-page">
       <header className="home-header">
@@ -41,6 +45,10 @@ export default function Home() {
       </header>
 
       <main className="home-conteudo">
+        <section className="bem-vindo">
+          <h3>Bem vindo a FarmAuction, você acessou nossa página em {dataAtual} as {horaAtual}</h3>
+        </section>
+
         <section className="home-hero">
           <h1 className="home-hero-titulo">Leilões de animais de fazenda</h1>
           <p className="home-hero-subtitulo">
@@ -69,6 +77,7 @@ export default function Home() {
                 <p className="categoria-card-descricao">
                   {categoria.descricao}
                 </p>
+                <h2 className="clique-aqui">Clique aqui</h2>
               </Link>
             ))}
           </div>

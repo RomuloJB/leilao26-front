@@ -20,15 +20,31 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
-    if (status === 401 || status === 403) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('usuario');
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
-      }
-    }
+    console.log(JSON.stringify(error), status)
+    // if (status === 401 || status === 403) {
+    //   localStorage.removeItem('token');
+    //   localStorage.removeItem('usuario');
+    //   if (window.location.pathname !== '/login') {
+    //     window.location.href = '/login';
+    //   }
+    // }
     return Promise.reject(error);
   }
 );
 
-export default api;
+const Api = {
+    get: async (route) => {
+        return api.get(route);
+    },
+    post: async (route, data, config) => {
+        return api.post(route, data, config);
+    },
+    put: async (route, data, config) => {
+        return api.put(route, data, config);
+    },
+    delete: async (route) => {
+        return api.delete(route);
+    },
+};
+
+export default Api;

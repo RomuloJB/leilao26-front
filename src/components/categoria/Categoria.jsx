@@ -1,26 +1,19 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import Api from '../../api/axiosInstance';
 
 const Categoria = () => {
 
-    const exemplosCategoria = [
-        {
-            "id": 1,
-            "nome": "Gado",
-            "observacao": "Todas as raças"
-        },
+    const[categorias, setCategorias] = useState([]);
 
-        {
-            "id": 2,
-            "nome": "Cavalos",
-            "observacao": "Todas as raças"
-        },
-
-        {
-            "id": 3,
-            "nome": "Ovelhas",
-            "observacao": "Todas as raças"
-        },
-    ]
+    useEffect(() => {
+        Api.get("/categoria").then(response => {
+            setCategorias(response.data);
+            console.log(response.data);
+        })
+        .catch(error => {
+            console.error("Não foi possivel encontrar categorias: ", error);
+        });
+    }, []);
 
     return (
         <div>
@@ -35,7 +28,7 @@ const Categoria = () => {
                 </thead>
 
                 <tbody>
-                    {exemplosCategoria.map(categoria => 
+                    {categorias.map(categoria => 
                         <tr key= {categoria.id}>
                             <td>{categoria.id}</td>
                             <td>{categoria.nome}</td>

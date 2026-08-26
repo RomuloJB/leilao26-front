@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import Api from '../../api/axiosInstance';
 
 export default function Lance() {
     const[lances, setLances] = useState([])
 
     useEffect(() => {
-        axios.get("http://localhost:8080/lance").then(response => {
+        Api.get("/lance").then(response => {
             setLances(response.data)
             console.log(response.data)
         })

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./NovoLeilao.css";
+import Api from "../../api/axiosInstance";
 
 export default function NovoLeilao() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const [categorias, setCategorias] = useState([]);
     const [carregandoCategorias, setCarregandoCategorias] = useState(true);
@@ -27,8 +27,8 @@ export default function NovoLeilao() {
    useEffect(() => {
         const token = localStorage.getItem("token"); // ajuste a chave se o AuthContext guardar com outro nome
 
-        axios
-            .get("http://localhost:8080/categoria/buscar", {
+        Api
+            .get("/categoria/buscar", {
                 headers: token ? { Authorization: `Bearer ${token}` } : {},
             })
             .then((response) => {
@@ -118,14 +118,11 @@ export default function NovoLeilao() {
         };
 
         try {
-            await axios.post(
-                "http://localhost:8080/leilao",
-                novoLeilao
-            );
-
+           const result =  await Api.post("/leilao/registrar", novoLeilao)
+            console.log(result)
             alert("Leilão criado com sucesso!");
 
-            navigate("/leiloes/gado");
+            // navigate("/leiloes/gado");
         } catch (error) {
             console.error("Erro ao criar leilão:", error);
 

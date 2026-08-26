@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import Api from '../../api/axiosInstance';
+
 
 export default function Leilao() {
 
@@ -15,8 +16,8 @@ export default function Leilao() {
     }
 
     useEffect(() => {
-        axios.get("http://localhost:8080/leilao").then(response => {
-            setLeilao(response.data)
+        Api.get("/leilao").then(response => {
+            setLeiloes(response.data)
             console.log(response.data)
         })
         .catch(error => {

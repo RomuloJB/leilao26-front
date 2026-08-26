@@ -3,21 +3,47 @@ import { login as loginService, cadastrar as cadastrarService } from '../service
 
 const AuthContext = createContext(null);
 
+function tokenExpirado(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (!payload.exp) return false;
+    return Date.now() >= payload.exp * 1000;
+  } catch {
+    return true;
+  }
+}
+
 export function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null);
-  // Enquanto "carregando" é true, ainda não sabemos se existe uma sessão
-  // salva no localStorage. Usado pra não "piscar" a tela de login em reloads.
+  // enquanto "carregando" é true, ainda não sabemos se existe uma sessão salva no localStorage. Usado pra não "piscar" a tela de login em reloads.
   const [carregando, setCarregando] = useState(true);
 
-  useEffect(() => {
+    useEffect(() => {
     const token = localStorage.getItem('token');
     const usuarioSalvo = localStorage.getItem('usuario');
 
     if (token && usuarioSalvo) {
-      setUsuario(JSON.parse(usuarioSalvo));
+      if (tokenExpirado(token)) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('usuario');
+      } else {
+        setUsuario(JSON.parse(usuarioSalvo));
+      }
     }
 
     setCarregando(false);
+  }, []);
+
+  // verifica a cada 1min se o token venceu enquanto a aba está aberta
+    useEffect(() => {
+    const intervalo = setInterval(() => {
+      const token = localStorage.getItem('token');
+      if (token && tokenExpirado(token)) {
+        logout();
+      }
+    }, 60 * 1000);
+
+    return () => clearInterval(intervalo);
   }, []);
 
   function salvarSessao(dados) {
@@ -32,8 +58,7 @@ export function AuthProvider({ children }) {
     salvarSessao(dados);
   }
 
-  // O back-end já devolve um token no cadastro (igual ao login), então o
-  // usuário fica autenticado automaticamente assim que se cadastra.
+  // o back-end já devolve um token no cadastro (igual ao login), então o usuário fica autenticado automaticamente assim que se cadastra.
   async function cadastrar(dadosCadastro) {
     const dados = await cadastrarService(dadosCadastro);
     salvarSessao(dados);

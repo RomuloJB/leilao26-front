@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import axios from "axios";
+import Api from "../../api/axiosInstance.js"
 import { Link } from "react-router-dom";
 import "./Leiloes.css";
 
@@ -10,8 +10,8 @@ export default function Leiloes() {
     const [erro, setErro] = useState("");
 
     useEffect(() => {
-        axios
-            .get("http://localhost:8080/leilao")
+        Api
+            .get("/leilao/buscar")
             .then((response) => {
                 setLeiloes(response.data);
             })
@@ -67,8 +67,8 @@ export default function Leiloes() {
 
         if (!confirmar) return;
 
-        axios
-            .delete(`http://localhost:8080/leilao/${id}`)
+        Api
+            .delete(`/leilao/excluir/${id}`)
             .then(() => {
                 setLeiloes((leiloesAtuais) =>
                     leiloesAtuais.filter((leilao) => leilao.id !== id)
