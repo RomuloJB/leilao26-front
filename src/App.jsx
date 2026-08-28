@@ -7,6 +7,7 @@ import Cadastro from './pages/cadastro/Cadastro.jsx';
 import Home from './pages/home/Home.jsx';
 import Leiloes from './pages/leiloes/Leiloes.jsx';
 import NovoLeilao from "./components/leilao/NovoLeilao";
+import LeilaoDetalhes from './pages/leiloes/LeilaoDetalhes.jsx';
 
 export default function App() {
   return (
