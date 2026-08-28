@@ -8,18 +8,6 @@ import Home from './pages/home/Home.jsx';
 import Leiloes from './pages/leiloes/Leiloes.jsx';
 import NovoLeilao from "./components/leilao/NovoLeilao";
 
-//import Categoria from './components/categoria/Categoria';
-
-/*
-function LogoutButton() {
-  const { logout } = useAuth();
-  return (
-    <button onClick={logout}>
-      Sair
-    </button>
-  );
-}*/
-
 export default function App() {
   return (
     <BrowserRouter>
@@ -32,34 +20,10 @@ export default function App() {
           <Route path="/cadastro" element={<Cadastro />} />
 
           {/* Rotas protegidas: só acessíveis após login */}
-          <Route
-            path="/leiloes/gado"
-            element={
-              <ProtectedRoute>
-                <Leiloes/>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/leiloes/novo"
-              element={
-                <ProtectedRoute>
-                  <NovoLeilao />
-                </ProtectedRoute>
-              }
-          />
-
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                {/* <Admin /> */}
-                <div>Área administrativa</div>
-                
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/leiloes/gado" element={<ProtectedRoute> <Leiloes/> </ProtectedRoute>}/>
+          <Route path="/leiloes/novo" element={<ProtectedRoute> <NovoLeilao/> </ProtectedRoute>}/>
+          <Route path="/admin" element={<ProtectedRoute> {/* <Admin /> */} <div>Área administrativa</div> </ProtectedRoute>}/>
+          <Route path="/leiloes/:id" element={<ProtectedRoute> <LeilaoDetalhes/> </ProtectedRoute>}/>
         </Routes>
       </AuthProvider>
     </BrowserRouter>
