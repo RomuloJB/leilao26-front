@@ -2,54 +2,39 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Api, { API_BASE_URL } from "../../api/axiosInstance";
 import { useAuth } from "../../context/AuthContext";
-import "./NovoLeilao.css";
+import "../../components/leilao/NovoLeilao.css";
 
-export default function NovoLeilao() {
+export default function EditarLeilao() {
     const { id } = useParams();
-    const modoEdicao = Boolean(id);
     const navigate = useNavigate();
     const { usuario } = useAuth();
 
     const [categorias, setCategorias] = useState([]);
+    const [carregando, setCarregando] = useState(true);
     const [carregandoCategorias, setCarregandoCategorias] = useState(true);
-    const [carregandoLeilao, setCarregandoLeilao] = useState(modoEdicao);
     const [salvando, setSalvando] = useState(false);
     const [erro, setErro] = useState("");
+    const [imagensAtuais, setImagensAtuais] = useState([]);
+    const [novasImagens, setNovasImagens] = useState([]);
 
     const [form, setForm] = useState({
-        titulo: "",
-        descricao: "",
-        descricaoDetalhada: "",
-        dataHoraInicio: "",
-        dataHoraFim: "",
-        status: "AGENDADO",
-        observacao: "",
-        valorIncremento: "",
-        lanceMinimo: "",
-        categoriaId: "",
+        titulo: "", descricao: "", descricaoDetalhada: "",
+        dataHoraInicio: "", dataHoraFim: "", status: "AGENDADO",
+        observacao: "", valorIncremento: "", lanceMinimo: "", categoriaId: "",
     });
-
-    const [imagensExistentes, setImagensExistentes] = useState([]);
-    const [novasImagens, setNovasImagens] = useState([]);
 
     useEffect(() => {
         Api.get("/categoria/buscar")
-            .then((response) => setCategorias(response.data))
-            .catch((error) => {
-                console.error("Erro ao buscar categorias:", error);
-                setErro("Não foi possível carregar as categorias.");
-            })
+            .then((r) => setCategorias(r.data))
+            .catch(() => setErro("Não foi possível carregar as categorias."))
             .finally(() => setCarregandoCategorias(false));
     }, []);
 
     useEffect(() => {
-        if (!modoEdicao) return;
-
         Api.get(`/leilao/buscar/${id}`)
             .then((response) => {
                 const leilao = response.data;
-                const semPermissao =
-                    leilao.vendedorId !== usuario?.id && !usuario?.roles?.includes("ADMIN");
+                const semPermissao = leilao.vendedorId !== usuario?.id && !usuario?.roles?.includes("ADMIN");
 
                 if (semPermissao) {
                     setErro("Você não tem permissão para editar este leilão.");
@@ -68,62 +53,43 @@ export default function NovoLeilao() {
                     lanceMinimo: leilao.lanceMinimo ?? "",
                     categoriaId: leilao.categoriaId ?? "",
                 });
-                setImagensExistentes(leilao.imagens || []);
+                setImagensAtuais(leilao.imagens || []);
             })
-            .catch((error) => {
-                console.error("Erro ao buscar leilão:", error);
-                setErro("Não foi possível carregar o leilão.");
-            })
-            .finally(() => setCarregandoLeilao(false));
-    }, [id, modoEdicao, usuario]);
+            .catch(() => setErro("Não foi possível carregar o leilão."))
+            .finally(() => setCarregando(false));
+    }, [id, usuario]);
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setForm((formAnterior) => ({ ...formAnterior, [name]: value }));
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((f) => ({ ...f, [name]: value }));
     };
 
-    const handleNovasImagens = (event) => setNovasImagens(Array.from(event.target.files));
+    const handleNovasImagens = (e) => setNovasImagens(Array.from(e.target.files));
 
-    const handleExcluirImagemExistente = (imagemId) => {
+    const handleExcluirImagemAtual = (imagemId) => {
         if (!window.confirm("Excluir esta imagem?")) return;
-
         Api.delete(`/imagem/excluir/${imagemId}`)
-            .then(() => setImagensExistentes((atuais) => atuais.filter((img) => img.id !== imagemId)))
+            .then(() => setImagensAtuais((atuais) => atuais.filter((i) => i.id !== imagemId)))
             .catch(() => alert("Não foi possível excluir a imagem."));
     };
 
-    const validar = () => {
+    const validarFormulario = () => {
         if (!form.titulo.trim()) return "Informe o título do leilão.";
         if (!form.descricao.trim()) return "Informe uma descrição.";
         if (!form.dataHoraInicio) return "Informe a data e hora de início.";
         if (!form.dataHoraFim) return "Informe a data e hora de encerramento.";
-        if (new Date(form.dataHoraFim) <= new Date(form.dataHoraInicio)) {
-            return "A data de encerramento deve ser posterior à data de início.";
-        }
+        if (new Date(form.dataHoraFim) <= new Date(form.dataHoraInicio)) return "A data de encerramento deve ser posterior à data de início.";
         if (!form.lanceMinimo || Number(form.lanceMinimo) <= 0) return "Informe um lance mínimo válido.";
         if (!form.valorIncremento || Number(form.valorIncremento) <= 0) return "Informe um valor de incremento válido.";
         if (!form.categoriaId) return "Selecione uma categoria.";
         return null;
     };
 
-    const paraPayload = () => ({
-        titulo: form.titulo,
-        descricao: form.descricao,
-        descricaoDetalhada: form.descricaoDetalhada,
-        dataHoraInicio: form.dataHoraInicio,
-        dataHoraFim: form.dataHoraFim,
-        status: form.status,
-        observacao: form.observacao,
-        valorIncremento: Number(form.valorIncremento),
-        lanceMinimo: Number(form.lanceMinimo),
-        categoria: { id: Number(form.categoriaId) },
-    });
-
-    const enviarNovasImagens = async (leilaoId) => {
+    const enviarNovasImagens = async () => {
         for (const arquivo of novasImagens) {
             const dados = new FormData();
             dados.append("arquivo", arquivo);
-            dados.append("leilaoId", leilaoId);
+            dados.append("leilaoId", id);
             try {
                 await Api.post("/imagem/upload", dados);
             } catch (error) {
@@ -132,87 +98,51 @@ export default function NovoLeilao() {
         }
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (salvando) return;
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setErro("");
-
-        const erroValidacao = validar();
-        if (erroValidacao) {
-            setErro(erroValidacao);
-            return;
-        }
+        const erroValidacao = validarFormulario();
+        if (erroValidacao) { setErro(erroValidacao); return; }
 
         setSalvando(true);
+        const leilaoAtualizado = {
+            titulo: form.titulo, descricao: form.descricao, descricaoDetalhada: form.descricaoDetalhada,
+            dataHoraInicio: form.dataHoraInicio, dataHoraFim: form.dataHoraFim, status: form.status,
+            observacao: form.observacao, valorIncremento: Number(form.valorIncremento),
+            lanceMinimo: Number(form.lanceMinimo), categoria: { id: Number(form.categoriaId) },
+        };
 
         try {
-            let leilaoId = id;
-
-            if (modoEdicao) {
-                await Api.put(`/leilao/atualizar/${id}`, paraPayload());
-            } else {
-                const resultado = await Api.post("/leilao/registrar", paraPayload());
-                leilaoId = resultado.data.id;
-            }
-
-            if (novasImagens.length > 0) {
-                await enviarNovasImagens(leilaoId);
-            }
-
-            alert(modoEdicao ? "Leilão atualizado com sucesso!" : "Leilão criado com sucesso!");
-            navigate(`/leiloes/${leilaoId}`);
+            await Api.put(`/leilao/atualizar/${id}`, leilaoAtualizado);
+            if (novasImagens.length > 0) await enviarNovasImagens();
+            alert("Leilão atualizado com sucesso!");
+            navigate(`/leiloes/${id}`);
         } catch (error) {
-            console.error("Erro ao salvar leilão:", error);
-
-            if (error.response?.status === 403) {
-                setErro("Você não tem permissão para editar este leilão.");
-            } else {
-                setErro(
-                    error.response?.data?.message ||
-                    (modoEdicao
-                        ? "Não foi possível salvar as alterações. Verifique os dados e tente novamente."
-                        : "Não foi possível criar o leilão. Verifique os dados e tente novamente.")
-                );
-            }
+            if (error.response?.status === 403) setErro("Você não tem permissão para editar este leilão.");
+            else setErro(error.response?.data?.message || "Não foi possível atualizar o leilão.");
         } finally {
             setSalvando(false);
         }
     };
 
-    if (modoEdicao && carregandoLeilao) {
-        return (
-            <div className="novo-leilao-page">
-                <header className="novo-leilao-header">
-                    <Link to="/" className="novo-leilao-logo">FarmAuction</Link>
-                    <Link to="/leiloes/gado" className="novo-leilao-voltar">← Voltar para leilões</Link>
-                </header>
-                <main className="novo-leilao-container">
-                    <p>Carregando dados do leilão...</p>
-                </main>
-            </div>
-        );
-    }
+    if (carregando) return <div className="estado-pagina"><div className="loading-spinner"></div><p>Carregando leilão...</p></div>;
+    if (erro && !form.titulo) return (
+        <div className="estado-erro">
+            <h3>Ocorreu um problema</h3><p>{erro}</p>
+            <Link to="/leiloes/gado">← Voltar para leilões</Link>
+        </div>
+    );
 
     return (
         <div className="novo-leilao-page">
             <header className="novo-leilao-header">
                 <Link to="/" className="novo-leilao-logo">FarmAuction</Link>
-                <Link to="/leiloes/gado" className="novo-leilao-voltar">← Voltar para leilões</Link>
+                <Link to={`/leiloes/${id}`} className="novo-leilao-voltar">← Voltar para o leilão</Link>
             </header>
-
             <main className="novo-leilao-container">
                 <div className="novo-leilao-titulo">
-                    <p>{modoEdicao ? "Edição" : "Novo cadastro"}</p>
-                    <h1>{modoEdicao ? "Editar leilão" : "Criar novo leilão"}</h1>
-                    <span>
-                        {modoEdicao
-                            ? "Atualize as informações do leilão e gerencie as fotos."
-                            : "Preencha as informações para cadastrar um novo leilão de animais."}
-                    </span>
+                    <p>Edição</p><h1>Editar leilão</h1><span>Atualize as informações do leilão.</span>
                 </div>
-
                 <form className="novo-leilao-form" onSubmit={handleSubmit}>
                     {erro && <div className="mensagem-erro">{erro}</div>}
 
@@ -221,29 +151,23 @@ export default function NovoLeilao() {
                         <div className="form-grid">
                             <div className="form-grupo form-grupo-completo">
                                 <label htmlFor="titulo">Título *</label>
-                                <input id="titulo" name="titulo" value={form.titulo} onChange={handleChange} placeholder="Ex.: Leilão de Gado Nelore" />
+                                <input id="titulo" name="titulo" value={form.titulo} onChange={handleChange} />
                             </div>
-
                             <div className="form-grupo form-grupo-completo">
                                 <label htmlFor="descricao">Descrição resumida *</label>
                                 <textarea id="descricao" name="descricao" value={form.descricao} onChange={handleChange} rows="3" />
                             </div>
-
                             <div className="form-grupo form-grupo-completo">
                                 <label htmlFor="descricaoDetalhada">Descrição detalhada</label>
                                 <textarea id="descricaoDetalhada" name="descricaoDetalhada" value={form.descricaoDetalhada} onChange={handleChange} rows="5" />
                             </div>
-
                             <div className="form-grupo">
                                 <label htmlFor="categoriaId">Categoria *</label>
                                 <select id="categoriaId" name="categoriaId" value={form.categoriaId} onChange={handleChange} disabled={carregandoCategorias}>
                                     <option value="">{carregandoCategorias ? "Carregando categorias..." : "Selecione uma categoria"}</option>
-                                    {categorias.map((categoria) => (
-                                        <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
-                                    ))}
+                                    {categorias.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
                                 </select>
                             </div>
-
                             <div className="form-grupo">
                                 <label htmlFor="status">Status</label>
                                 <select id="status" name="status" value={form.status} onChange={handleChange}>
@@ -294,33 +218,27 @@ export default function NovoLeilao() {
 
                     <section className="form-secao">
                         <h2>Imagens</h2>
-
-                        {modoEdicao && imagensExistentes.length > 0 && (
+                        {imagensAtuais.length > 0 && (
                             <div className="imagens-atuais">
-                                {imagensExistentes.map((imagem) => (
+                                {imagensAtuais.map((imagem) => (
                                     <div className="imagem-atual" key={imagem.id}>
                                         <img src={`${API_BASE_URL}${imagem.url}`} alt="Foto do leilão" />
-                                        <button type="button" onClick={() => handleExcluirImagemExistente(imagem.id)}>
-                                            Remover
-                                        </button>
+                                        <button type="button" onClick={() => handleExcluirImagemAtual(imagem.id)}>Remover</button>
                                     </div>
                                 ))}
                             </div>
                         )}
-
                         <div className="form-grupo form-grupo-completo">
-                            <label htmlFor="imagens">{modoEdicao ? "Adicionar novas fotos" : "Fotos do leilão"}</label>
+                            <label htmlFor="imagens">Adicionar novas fotos</label>
                             <input id="imagens" type="file" accept="image/*" multiple onChange={handleNovasImagens} />
                             {novasImagens.length > 0 && <span>{novasImagens.length} imagem(ns) selecionada(s)</span>}
                         </div>
                     </section>
 
                     <div className="form-acoes">
-                        <Link to="/leiloes/gado" className="botao-cancelar">Cancelar</Link>
-                        <button type="submit" className="botao-salvar" disabled={salvando || carregandoCategorias}>
-                            {salvando
-                                ? (modoEdicao ? "Salvando alterações..." : "Criando leilão...")
-                                : (modoEdicao ? "Salvar alterações" : "Criar leilão")}
+                        <Link to={`/leiloes/${id}`} className="botao-cancelar">Cancelar</Link>
+                        <button type="submit" className="botao-salvar" disabled={salvando}>
+                            {salvando ? "Salvando..." : "Salvar alterações"}
                         </button>
                     </div>
                 </form>

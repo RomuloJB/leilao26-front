@@ -8,6 +8,7 @@ import Home from './pages/home/Home.jsx';
 import Leiloes from './pages/leiloes/Leiloes.jsx';
 import NovoLeilao from "./components/leilao/NovoLeilao";
 import LeilaoDetalhes from './pages/leiloes/LeilaoDetalhes.jsx';
+import EditarLeilao from './pages/leiloes/EditarLeilao';
 
 export default function App() {
   return (
@@ -22,9 +23,11 @@ export default function App() {
 
           {/* Rotas protegidas: só acessíveis após login */}
           <Route path="/leiloes/gado" element={<ProtectedRoute> <Leiloes/> </ProtectedRoute>}/>
-          <Route path="/leiloes/novo" element={<ProtectedRoute> <NovoLeilao/> </ProtectedRoute>}/>
+          <Route path="/leiloes/novo" element={<ProtectedRoute><NovoLeilao /></ProtectedRoute>} />
+          <Route path="/leiloes/:id/editar" element={<ProtectedRoute><NovoLeilao /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute> {/* <Admin /> */} <div>Área administrativa</div> </ProtectedRoute>}/>
           <Route path="/leiloes/:id" element={<ProtectedRoute> <LeilaoDetalhes/> </ProtectedRoute>}/>
+          <Route path="/leiloes/:id/editar" element={<ProtectedRoute> <EditarLeilao/> </ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

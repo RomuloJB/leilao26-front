@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Api from "../../api/axiosInstance.js"
 import { Link } from "react-router-dom";
 import "./Leiloes.css";
+import { API_BASE_URL } from "../../api/axiosInstance";
 
 export default function Leiloes() {
     const [leiloes, setLeiloes] = useState([]);
@@ -175,10 +176,7 @@ export default function Leiloes() {
                                             {leilao.imagens &&
                                             leilao.imagens.length > 0 ? (
                                                 <img
-                                                    src={
-                                                        leilao.imagens[0].url
-                                                    }
-                                                    alt={leilao.titulo}
+                                                    src={`${API_BASE_URL}${leilao.imagens[0].url}`} alt="imagens"
                                                 />
                                             ) : (
                                                 <span>🐄</span>

@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Api from "../../api/axiosInstance";
 import "./Leiloes.css";
 import "./LeilaoDetalhes.css";
+import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../api/axiosInstance";
 
 export default function LeilaoDetalhes() {
     const { id } = useParams();
@@ -11,6 +13,9 @@ export default function LeilaoDetalhes() {
     const [leilao, setLeilao] = useState(null);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState("");
+
+    const { usuario } = useAuth();
+    const podeEditar = leilao && (leilao.vendedorId === usuario?.id || usuario?.roles?.includes("ADMIN"));
 
     useEffect(() => {
         Api.get(`/leilao/buscar/${id}`)
@@ -72,7 +77,8 @@ export default function LeilaoDetalhes() {
             <main className="leilao-detalhes-container">
                 <div className="leilao-detalhes-imagem">
                     {leilao.imagens?.length > 0 ? (
-                        <img src={leilao.imagens[0].url} alt={leilao.titulo} />
+                        <img src={`${API_BASE_URL}${leilao.imagens[0].url}`} alt="imagens"
+ />
                     ) : (
                         <span>🐄</span>
                     )}
@@ -111,19 +117,21 @@ export default function LeilaoDetalhes() {
                         </div>
                     </div>
 
-                    {leilao.categoria?.nome && (
+                    {leilao.categoriaNome && (
                         <p className="leilao-categoria">Categoria: {leilao.categoria.nome}</p>
+                    )}
+
+                    {podeEditar && (
+                        <div className="leilao-acoes">
+                            <Link to={`/leiloes/${id}/editar`} className="botao-detalhes">Editar leilão</Link>
+                            <button className="botao-excluir" onClick={handleDelete}>Excluir leilão</button>
+                        </div>
                     )}
 
                     {leilao.observacao && (
                         <p className="leilao-observacao">Obs: {leilao.observacao}</p>
                     )}
 
-                    <div className="leilao-acoes">
-                        <button className="botao-excluir" onClick={handleDelete}>
-                            Excluir leilão
-                        </button>
-                    </div>
                 </div>
             </main>
         </div>

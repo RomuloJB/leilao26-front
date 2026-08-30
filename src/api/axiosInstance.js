@@ -1,11 +1,8 @@
 import axios from 'axios';
 
-// Ajuste para a URL real do seu back-end
-const api = axios.create({
-  baseURL: 'http://localhost:8080',
-});
+export const API_BASE_URL = 'http://localhost:8080';
+const api = axios.create({ baseURL: API_BASE_URL });
 
-// Anexa o token em toda requisição autenticada
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -14,8 +11,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Se o token expirou ou é inválido, o back devolve 401/403:
-// limpa a sessão local e manda o usuário de volta pro login.
 api.interceptors.response.use(
   (response) => response,
   (error) => {

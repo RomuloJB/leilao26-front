@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   function salvarSessao(dados) {
-    const usuarioLogado = { id: dados.id, username: dados.username };
+    const usuarioLogado = { id: dados.id, username: dados.username, roles: dados.roles || [] };
     localStorage.setItem('token', dados.token);
     localStorage.setItem('usuario', JSON.stringify(usuarioLogado));
     setUsuario(usuarioLogado);
