@@ -150,3 +150,27 @@
 .cadastro-login a:hover {
   text-decoration: underline;
 }
+
+.cadastro-acoes {
+  display: flex;
+  gap: 12px;
+}
+
+.cadastro-acoes .cadastro-botao {
+  flex: 1;
+}
+
+.cadastro-botao-secundario {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

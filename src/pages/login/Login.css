@@ -104,3 +104,31 @@
 .login-cadastro a:hover {
   text-decoration: underline;
 }
+
+.login-acoes {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.login-acoes .login-botao {
+  flex: 1;
+}
+
+.login-botao-secundario {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-botao-link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  margin-top: 8px;
+}

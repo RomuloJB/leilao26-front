@@ -41,12 +41,7 @@ export default function Leiloes() {
             );
         });
     }, [busca, leiloes]);
-
-        return Number(valor).toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-        });
-    };
+    
 
     const handleDelete = (id, titulo) => {
         const confirmar = window.confirm(
@@ -258,3 +253,4 @@ export default function Leiloes() {
             </main>
         </div>
     );
+}

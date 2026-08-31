@@ -79,6 +79,12 @@ export default function Login() {
         <p className="login-cadastro">
           Não tem uma conta? <Link to="/cadastro">Cadastre-se</Link>
         </p>
+
+        <p className="login-cadastro">
+          <Link to="/recuperar-senha">Esqueci minha senha</Link>
+        </p>
+
+        
       </form>
     </div>
   );

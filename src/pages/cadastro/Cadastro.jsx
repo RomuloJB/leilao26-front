@@ -153,9 +153,12 @@ export default function Cadastro() {
           </div>
         )}
 
-        <button className="cadastro-botao" type="submit" disabled={carregando}>
-          {carregando ? 'Cadastrando...' : 'Cadastrar'}
-        </button>
+        <div className="cadastro-acoes">
+          <Link to="/login" className="cadastro-botao-secundario">Cancelar</Link>
+          <button className="cadastro-botao" type="submit" disabled={carregando}>
+            {carregando ? 'Cadastrando...' : 'Cadastrar'}
+          </button>
+        </div>
 
         <p className="cadastro-login">
           Já tem uma conta? <Link to="/login">Entrar</Link>

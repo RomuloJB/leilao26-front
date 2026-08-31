@@ -9,6 +9,8 @@ import Leiloes from './pages/leiloes/Leiloes.jsx';
 import NovoLeilao from "./components/leilao/NovoLeilao";
 import LeilaoDetalhes from './pages/leiloes/LeilaoDetalhes.jsx';
 import EditarLeilao from './pages/leiloes/EditarLeilao';
+import RecuperarSenha from './pages/senha/RecuperarSenha';
+import AlterarSenha from './pages/senha/AlterarSenha';
 
 export default function App() {
   return (
@@ -27,6 +29,8 @@ export default function App() {
           <Route path="/leiloes/:id/editar" element={<ProtectedRoute><NovoLeilao /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute> {/* <Admin /> */} <div>Área administrativa</div> </ProtectedRoute>}/>
           <Route path="/leiloes/:id" element={<ProtectedRoute> <LeilaoDetalhes/> </ProtectedRoute>}/>
+          <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+          <Route path="/alterar-senha" element={<AlterarSenha />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
