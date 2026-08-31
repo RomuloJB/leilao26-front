@@ -3,6 +3,7 @@ import Api from "../../api/axiosInstance.js"
 import { Link } from "react-router-dom";
 import "./Leiloes.css";
 import { API_BASE_URL } from "../../api/axiosInstance";
+import { formatarData, formatarValor } from "../../utils/format";
 
 export default function Leiloes() {
     const [leiloes, setLeiloes] = useState([]);
@@ -40,20 +41,6 @@ export default function Leiloes() {
             );
         });
     }, [busca, leiloes]);
-
-    const formatarData = (data) => {
-        if (!data) return "Não informada";
-
-        return new Intl.DateTimeFormat("pt-BR", {
-            dateStyle: "short",
-            timeStyle: "short",
-        }).format(new Date(data));
-    };
-
-    const formatarValor = (valor) => {
-        if (valor === null || valor === undefined) {
-            return "Não informado";
-        }
 
         return Number(valor).toLocaleString("pt-BR", {
             style: "currency",
@@ -271,4 +258,3 @@ export default function Leiloes() {
             </main>
         </div>
     );
-}

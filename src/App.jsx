@@ -27,7 +27,6 @@ export default function App() {
           <Route path="/leiloes/:id/editar" element={<ProtectedRoute><NovoLeilao /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute> {/* <Admin /> */} <div>Área administrativa</div> </ProtectedRoute>}/>
           <Route path="/leiloes/:id" element={<ProtectedRoute> <LeilaoDetalhes/> </ProtectedRoute>}/>
-          <Route path="/leiloes/:id/editar" element={<ProtectedRoute> <EditarLeilao/> </ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

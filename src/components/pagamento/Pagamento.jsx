@@ -6,7 +6,7 @@ export default function Pagamento() {
 
     useEffect(() => {
         Api.get("/pagamento").then(response => {
-            setPagamento(response.data)
+            setPagamentos(response.data)
             console.log(response.data)
         })
         .catch(error => {

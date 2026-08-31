@@ -5,6 +5,7 @@ import "./Leiloes.css";
 import "./LeilaoDetalhes.css";
 import { useAuth } from "../../context/AuthContext";
 import { API_BASE_URL } from "../../api/axiosInstance";
+import { formatarData, formatarValor } from "../../utils/format";
 
 export default function LeilaoDetalhes() {
     const { id } = useParams();
@@ -37,16 +38,6 @@ export default function LeilaoDetalhes() {
             .then(() => navigate("/leiloes/gado"))
             .catch(() => alert("Não foi possível excluir o leilão."));
     };
-
-    const formatarData = (data) =>
-        data
-            ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(data))
-            : "Não informada";
-
-    const formatarValor = (valor) =>
-        valor == null
-            ? "Não informado"
-            : Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
     if (carregando) {
         return (

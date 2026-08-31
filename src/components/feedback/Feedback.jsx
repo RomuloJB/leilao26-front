@@ -6,7 +6,7 @@ export default function Feedback(){
 
     useEffect(() => {
         Api.get("/feedback").then(response => {
-            setFeedback(response.data)
+            setFeedbacks(response.data)
             console.log(response.data)
         })
         .catch(error => {
