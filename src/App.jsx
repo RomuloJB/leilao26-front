@@ -8,7 +8,6 @@ import Home from './pages/home/Home.jsx';
 import Leiloes from './pages/leiloes/Leiloes.jsx';
 import NovoLeilao from "./components/leilao/NovoLeilao";
 import LeilaoDetalhes from './pages/leiloes/LeilaoDetalhes.jsx';
-import EditarLeilao from './pages/leiloes/EditarLeilao';
 import RecuperarSenha from './pages/senha/RecuperarSenha';
 import AlterarSenha from './pages/senha/AlterarSenha';
 import AdminCategorias from './pages/admin/AdminCategorias.jsx';

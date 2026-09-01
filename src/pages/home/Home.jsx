@@ -29,11 +29,6 @@ export default function Home() {
           {autenticado ? (
             <div className="home-usuario">
               <span className="home-usuario-nome">Olá, {usuario?.username}</span>
-              {isAdmin && (
-                <Link className="home-botao-entrar" to="/admin/categorias">
-                  Gerenciar categorias
-                </Link>
-              )}
               <button className="home-botao-sair" onClick={logout} type="button">Sair</button>
             </div>
           ) : (
@@ -55,12 +50,19 @@ export default function Home() {
         </section>
 
         <section className="home-categorias">
-          <h2 className="home-categorias-titulo">Categorias de leilões</h2>
-          {carregandoCategorias && <p>Carregando categorias...</p>}
+          <div className="home-categorias-topo">
+            <h2 className="home-categorias-titulo">Categorias de leilões</h2>
+            {carregandoCategorias && <p>Carregando categorias...</p>}
+            {isAdmin && (
+              <Link className="botao-gerenciar-categorias" to="/admin/categorias">
+                Gerenciar categorias
+              </Link>
+            )}
+          </div>
           <div className="home-categorias-grid">
             {categorias.map((categoria) => (
               <Link key={categoria.id} to={`/leiloes/categoria/${categoria.id}`} className="categoria-card">
-                <span className="categoria-card-icone" aria-hidden="true">{categoria.icone || '📦'}</span>
+                <span className="categoria-card-icone" aria-hidden="true">{categoria.icone || ''}</span>
                 <h3 className="categoria-card-nome">{categoria.nome}</h3>
                 <p className="categoria-card-descricao">
                   {categoria.observacao || 'Confira os leilões desta categoria.'}

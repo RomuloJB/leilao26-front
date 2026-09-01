@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Api from "../../api/axiosInstance.js"
-import { Link } from "react-router-dom";
 import "./Leiloes.css";
 import { API_BASE_URL } from "../../api/axiosInstance";
 import { formatarData, formatarValor } from "../../utils/format";
@@ -13,6 +12,14 @@ export default function Leiloes() {
     const [erro, setErro] = useState("");
     const { categoriaId } = useParams();
     const [categoria, setCategoria] = useState(null);
+
+    useEffect(() => {
+    setCarregando(true);
+    Api.get("/leilao/buscar")
+        .then((res) => setLeiloes(res.data))
+        .catch(() => setErro("Não foi possível carregar os leilões."))
+        .finally(() => setCarregando(false));
+    }, []);
 
     useEffect(() => {
         if (!categoriaId) { setCategoria(null); return; }

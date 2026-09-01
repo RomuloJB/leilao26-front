@@ -99,10 +99,28 @@
 }
 
 .home-categorias-titulo {
-  margin: 0 0 20px;
   font-size: 1.3rem;
   font-weight: 700;
   color: #218b1d;
+}
+
+.botao-gerenciar-categorias {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 22px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #d0e6cf;
+  background: #0b3d13;
+  text-decoration: none;
+  transition: filter 0.15s ease;
+}
+
+.home-categorias-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
 }
 
 .home-categorias-grid {
