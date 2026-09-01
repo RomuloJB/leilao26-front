@@ -11,6 +11,7 @@ import LeilaoDetalhes from './pages/leiloes/LeilaoDetalhes.jsx';
 import EditarLeilao from './pages/leiloes/EditarLeilao';
 import RecuperarSenha from './pages/senha/RecuperarSenha';
 import AlterarSenha from './pages/senha/AlterarSenha';
+import AdminCategorias from './pages/admin/AdminCategorias.jsx';
 
 export default function App() {
   return (
@@ -31,6 +32,8 @@ export default function App() {
           <Route path="/leiloes/:id" element={<ProtectedRoute> <LeilaoDetalhes/> </ProtectedRoute>}/>
           <Route path="/recuperar-senha" element={<RecuperarSenha />} />
           <Route path="/alterar-senha" element={<AlterarSenha />} />
+          <Route path="/leiloes/categoria/:categoriaId" element={<ProtectedRoute><Leiloes/></ProtectedRoute>}/>
+          <Route path="/admin/categorias" element={<ProtectedRoute perfilExigido="ADMIN"><AdminCategorias/></ProtectedRoute>}/>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

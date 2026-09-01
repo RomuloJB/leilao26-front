@@ -4,43 +4,36 @@ import { Link } from "react-router-dom";
 import "./Leiloes.css";
 import { API_BASE_URL } from "../../api/axiosInstance";
 import { formatarData, formatarValor } from "../../utils/format";
+import { Link, useParams } from "react-router-dom";
 
 export default function Leiloes() {
     const [leiloes, setLeiloes] = useState([]);
     const [busca, setBusca] = useState("");
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState("");
+    const { categoriaId } = useParams();
+    const [categoria, setCategoria] = useState(null);
 
     useEffect(() => {
-        Api
-            .get("/leilao/buscar")
-            .then((response) => {
-                setLeiloes(response.data);
-            })
-            .catch((error) => {
-                console.error("Erro ao buscar leilões:", error);
-                setErro("Não foi possível carregar os leilões.");
-            })
-            .finally(() => {
-                setCarregando(false);
-            });
-    }, []);
+        if (!categoriaId) { setCategoria(null); return; }
+        Api.get(`/categoria/buscar/id/${categoriaId}`)
+            .then((res) => setCategoria(res.data))
+            .catch(() => setCategoria(null));
+    }, [categoriaId]);
 
     const leiloesFiltrados = useMemo(() => {
-        const termo = busca.toLowerCase().trim();
-
-        if (!termo) {
-            return leiloes;
-        }
-
-        return leiloes.filter((leilao) => {
-            return (
-                leilao.titulo?.toLowerCase().includes(termo) ||
-                leilao.descricao?.toLowerCase().includes(termo) ||
-                leilao.status?.toLowerCase().includes(termo)
-            );
-        });
-    }, [busca, leiloes]);
+    const termo = busca.toLowerCase().trim();
+    return leiloes.filter((leilao) => {
+        const pertenceCategoria = !categoriaId || String(leilao.categoriaId) === String(categoriaId);
+        if (!pertenceCategoria) return false;
+        if (!termo) return true;
+        return (
+            leilao.titulo?.toLowerCase().includes(termo) ||
+            leilao.descricao?.toLowerCase().includes(termo) ||
+            leilao.status?.toLowerCase().includes(termo)
+        );
+    });
+}, [busca, leiloes, categoriaId]);
     
 
     const handleDelete = (id, titulo) => {
@@ -88,7 +81,7 @@ export default function Leiloes() {
                             Leilões de animais de fazenda
                         </p>
 
-                        <h1>Leilões disponíveis</h1>
+                        <h1>{categoria ? `Leilões de ${categoria.nome}` : "Leilões disponíveis"}</h1>
                     </div>
 
                     <div className="barra-busca">
