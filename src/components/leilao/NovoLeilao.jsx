@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Api, { API_BASE_URL } from "../../api/axiosInstance";
+import { API_BASE_URL } from "../../api/axiosInstance";
+import categoriaService from "../../services/categoriaService";
+import leilaoService from "../../services/leilaoService";
+import imagemService from "../../services/imagemService";
 import { useAuth } from "../../context/AuthContext";
 import "./NovoLeilao.css";
 
@@ -33,7 +36,7 @@ export default function NovoLeilao() {
     const [novasImagens, setNovasImagens] = useState([]);
 
     useEffect(() => {
-        Api.get("/categoria/buscar")
+        categoriaService.buscarTodos()
             .then((response) => setCategorias(response.data))
             .catch((error) => {
                 console.error("Erro ao buscar categorias:", error);
@@ -45,7 +48,7 @@ export default function NovoLeilao() {
     useEffect(() => {
         if (!modoEdicao) return;
 
-        Api.get(`/leilao/buscar/${id}`)
+        leilaoService.buscarPorId(id)
             .then((response) => {
                 const leilao = response.data;
                 const semPermissao =
@@ -87,7 +90,7 @@ export default function NovoLeilao() {
     const handleExcluirImagemExistente = (imagemId) => {
         if (!window.confirm("Excluir esta imagem?")) return;
 
-        Api.delete(`/imagem/excluir/${imagemId}`)
+        imagemService.excluir(imagemId)
             .then(() => setImagensExistentes((atuais) => atuais.filter((img) => img.id !== imagemId)))
             .catch(() => alert("Não foi possível excluir a imagem."));
     };
@@ -125,7 +128,7 @@ export default function NovoLeilao() {
             dados.append("arquivo", arquivo);
             dados.append("leilaoId", leilaoId);
             try {
-                await Api.post("/imagem/upload", dados);
+                await imagemService.upload(dados);
             } catch (error) {
                 console.error("Erro ao enviar imagem:", error);
             }
@@ -151,9 +154,9 @@ export default function NovoLeilao() {
             let leilaoId = id;
 
             if (modoEdicao) {
-                await Api.put(`/leilao/atualizar/${id}`, paraPayload());
+                await leilaoService.atualizar(id, paraPayload());
             } else {
-                const resultado = await Api.post("/leilao/registrar", paraPayload());
+                const resultado = await leilaoService.criar(paraPayload());
                 leilaoId = resultado.data.id;
             }
 

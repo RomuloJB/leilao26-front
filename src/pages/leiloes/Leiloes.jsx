@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Api from "../../api/axiosInstance.js"
+import leilaoService from "../../services/leilaoService";
+import categoriaService from "../../services/categoriaService";
 import "./Leiloes.css";
 import { API_BASE_URL } from "../../api/axiosInstance";
 import { formatarData, formatarValor } from "../../utils/format";
@@ -15,7 +16,7 @@ export default function Leiloes() {
 
     useEffect(() => {
     setCarregando(true);
-    Api.get("/leilao/buscar")
+    leilaoService.buscarTodos()
         .then((res) => setLeiloes(res.data))
         .catch(() => setErro("Não foi possível carregar os leilões."))
         .finally(() => setCarregando(false));
@@ -23,7 +24,7 @@ export default function Leiloes() {
 
     useEffect(() => {
         if (!categoriaId) { setCategoria(null); return; }
-        Api.get(`/categoria/buscar/id/${categoriaId}`)
+        categoriaService.buscarPorId(categoriaId)
             .then((res) => setCategoria(res.data))
             .catch(() => setCategoria(null));
     }, [categoriaId]);
@@ -50,8 +51,8 @@ export default function Leiloes() {
 
         if (!confirmar) return;
 
-        Api
-            .delete(`/leilao/excluir/${id}`)
+        leilaoService
+            .excluir(id)
             .then(() => {
                 setLeiloes((leiloesAtuais) =>
                     leiloesAtuais.filter((leilao) => leilao.id !== id)

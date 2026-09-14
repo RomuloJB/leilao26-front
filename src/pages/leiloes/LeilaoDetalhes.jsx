@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Api from "../../api/axiosInstance";
+import leilaoService from "../../services/leilaoService";
 import "./Leiloes.css";
 import "./LeilaoDetalhes.css";
 import { useAuth } from "../../context/AuthContext";
@@ -19,7 +19,7 @@ export default function LeilaoDetalhes() {
     const podeEditar = leilao && (leilao.vendedorId === usuario?.id || usuario?.roles?.includes("ADMIN"));
 
     useEffect(() => {
-        Api.get(`/leilao/buscar/${id}`)
+        leilaoService.buscarPorId(id)
             .then((response) => setLeilao(response.data))
             .catch((error) => {
                 console.error("Erro ao buscar leilão:", error);
@@ -34,7 +34,7 @@ export default function LeilaoDetalhes() {
         );
         if (!confirmar) return;
 
-        Api.delete(`/leilao/excluir/${id}`)
+        leilaoService.excluir(id)
             .then(() => navigate("/leiloes/gado"))
             .catch(() => alert("Não foi possível excluir o leilão."));
     };

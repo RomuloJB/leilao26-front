@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import Api from '../../api/axiosInstance';
+import feedbackService from '../../services/feedbackService';
 
 export default function Feedback(){
     const[feedbacks, setFeedbacks] = useState([]);
 
     useEffect(() => {
-        Api.get("/feedback").then(response => {
+        feedbackService.listar().then(response => {
             setFeedbacks(response.data)
             console.log(response.data)
         })

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import Api from '../../api/axiosInstance';
+import categoriaService from '../../services/categoriaService';
 import './Home.css';
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
   const [carregandoCategorias, setCarregandoCategorias] = useState(true);
 
   useEffect(() => {
-    Api.get('/categoria/buscar')
+    categoriaService.buscarTodos()
       .then((res) => setCategorias(res.data))
       .catch((err) => console.error('Erro ao buscar categorias:', err))
       .finally(() => setCarregandoCategorias(false));

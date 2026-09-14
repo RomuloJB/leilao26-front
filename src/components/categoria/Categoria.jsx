@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import Api from '../../api/axiosInstance';
+import categoriaService from '../../services/categoriaService';
 
 const Categoria = () => {
 
     const[categorias, setCategorias] = useState([]);
 
     useEffect(() => {
-        Api.get("/categoria").then(response => {
+        categoriaService.listar().then(response => {
             setCategorias(response.data);
             console.log(response.data);
         })

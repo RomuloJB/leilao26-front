@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import Api from '../../api/axiosInstance';
+import pagamentoService from '../../services/pagamentoService';
 
 export default function Pagamento() {
     const[pagamentos, setPagamentos] = useState([]);
 
     useEffect(() => {
-        Api.get("/pagamento").then(response => {
+        pagamentoService.listar().then(response => {
             setPagamentos(response.data)
             console.log(response.data)
         })

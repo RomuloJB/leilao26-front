@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import Api from "../../api/axiosInstance;"
+import pessoaService from "../../services/pessoaService";
 
 function Pessoa(){
     const[pessoas, setPessoas] = useState([]);
 
     useEffect(() => {
-        Api.get("/pessoa").then(response => {
+        pessoaService.listar().then(response => {
             setPessoas(response.data)
             console.log(response.data)
         })

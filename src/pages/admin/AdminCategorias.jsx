@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Api from "../../api/axiosInstance";
+import categoriaService from "../../services/categoriaService";
 import "./AdminCategorias.css";
 
 const ICONES_SUGERIDOS = ["🐄", "🐎", "🐑", "🐖", "🐐", "🐓", "🐇", "🌾"];
@@ -15,7 +15,7 @@ export default function AdminCategorias() {
 
     const carregarCategorias = () => {
         setCarregando(true);
-        Api.get("/categoria/buscar")
+        categoriaService.buscarTodos()
             .then((res) => setCategorias(res.data))
             .catch(() => setErro("Não foi possível carregar as categorias."))
             .finally(() => setCarregando(false));
@@ -36,7 +36,7 @@ export default function AdminCategorias() {
 
         setSalvando(true);
         try {
-            await Api.post("/categoria/registrar", {
+            await categoriaService.criar({
                 nome: form.nome.trim(),
                 observacao: form.observacao.trim(),
                 icone: form.icone.trim() || "📦",
@@ -53,7 +53,7 @@ export default function AdminCategorias() {
 
     const handleExcluir = (categoria) => {
         if (!window.confirm(`Excluir a categoria "${categoria.nome}"?`)) return;
-        Api.delete(`/categoria/excluir/${categoria.id}`)
+        categoriaService.excluir(categoria.id)
             .then(() => setCategorias((atuais) => atuais.filter((c) => c.id !== categoria.id)))
             .catch(() => alert("Não foi possível excluir. Verifique se ela não possui leilões vinculados."));
     };

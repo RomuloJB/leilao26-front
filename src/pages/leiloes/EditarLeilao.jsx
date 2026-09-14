@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Api, { API_BASE_URL } from "../../api/axiosInstance";
+import { API_BASE_URL } from "../../api/axiosInstance";
+import categoriaService from "../../services/categoriaService";
+import leilaoService from "../../services/leilaoService";
+import imagemService from "../../services/imagemService";
 import { useAuth } from "../../context/AuthContext";
 import "../../components/leilao/NovoLeilao.css";
 
@@ -24,14 +27,14 @@ export default function EditarLeilao() {
     });
 
     useEffect(() => {
-        Api.get("/categoria/buscar")
+        categoriaService.buscarTodos()
             .then((r) => setCategorias(r.data))
             .catch(() => setErro("Não foi possível carregar as categorias."))
             .finally(() => setCarregandoCategorias(false));
     }, []);
 
     useEffect(() => {
-        Api.get(`/leilao/buscar/${id}`)
+        leilaoService.buscarPorId(id)
             .then((response) => {
                 const leilao = response.data;
                 const semPermissao = leilao.vendedorId !== usuario?.id && !usuario?.roles?.includes("ADMIN");
@@ -68,7 +71,7 @@ export default function EditarLeilao() {
 
     const handleExcluirImagemAtual = (imagemId) => {
         if (!window.confirm("Excluir esta imagem?")) return;
-        Api.delete(`/imagem/excluir/${imagemId}`)
+        imagemService.excluir(imagemId)
             .then(() => setImagensAtuais((atuais) => atuais.filter((i) => i.id !== imagemId)))
             .catch(() => alert("Não foi possível excluir a imagem."));
     };
@@ -91,7 +94,7 @@ export default function EditarLeilao() {
             dados.append("arquivo", arquivo);
             dados.append("leilaoId", id);
             try {
-                await Api.post("/imagem/upload", dados);
+                await imagemService.upload(dados);
             } catch (error) {
                 console.error("Erro ao enviar imagem:", error);
             }
@@ -113,7 +116,7 @@ export default function EditarLeilao() {
         };
 
         try {
-            await Api.put(`/leilao/atualizar/${id}`, leilaoAtualizado);
+            await leilaoService.atualizar(id, leilaoAtualizado);
             if (novasImagens.length > 0) await enviarNovasImagens();
             alert("Leilão atualizado com sucesso!");
             navigate(`/leiloes/${id}`);
