@@ -109,7 +109,7 @@ export default function LeilaoDetalhes() {
                     </div>
 
                     {leilao.categoriaNome && (
-                        <p className="leilao-categoria">Categoria: {leilao.categoria.nome}</p>
+                        <p className="leilao-categoria">Categoria: {leilao.categoriaNome}</p>
                     )}
 
                     {podeEditar && (

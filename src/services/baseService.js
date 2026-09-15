@@ -30,7 +30,7 @@ export default class BaseService {
     }
 
     buscarPorId(id) {
-        return this.get(`/buscar/${id}`);
+        return this.get(`/buscar/id/${id}`);
     }
 
     criar(dados, config) {
