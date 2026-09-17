@@ -7,7 +7,7 @@ import Footer from '../../components/footer/Footer';
 import './Home.css';
 
 export default function Home() {
-  const { usuario } = useAuth();
+  const { isAdmin } = useAuth();
   const [categorias, setCategorias] = useState([]);
   const [carregandoCategorias, setCarregandoCategorias] = useState(true);
 
@@ -21,7 +21,6 @@ export default function Home() {
   const atual = new Date();
   const dataAtual = atual.toLocaleDateString("pt-BR");
   const horaAtual = atual.toLocaleTimeString("pt-BR");
-  const isAdmin = usuario?.roles?.includes('ADMIN');
 
   return (
     <div className="home-page">

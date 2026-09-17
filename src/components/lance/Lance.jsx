@@ -1,40 +1,39 @@
-import React, {useState, useEffect} from 'react';
-import lanceService from '../../services/lanceService';
+import React, { useState } from "react";
+import LanceModal from "./LanceModal";
+import "./Lance.css";
 
-export default function Lance() {
-    const[lances, setLances] = useState([])
+/**
+ * Botão "Dar lance" + popup.
+ *
+ * Uso: <Lance leilao={leilao} onLanceRegistrado={(lance) => ...} />
+ * Quem decide se o botão deve aparecer é o pai (via podeDarLance do AuthContext).
+ * onLanceRegistrado recebe o LanceResponseDTO criado pra o pai atualizar o estado dele.
+ */
+export default function Lance({ leilao, onLanceRegistrado, className = "" }) {
+    const [aberto, setAberto] = useState(false);
 
-    useEffect(() => {
-        lanceService.listar().then(response => {
-            setLances(response.data)
-            console.log(response.data)
-        })
-        .catch(error => {
-            console.error("Erro ao buscar lances: ", error);
-        });
-    }, []);
+    const handleSucesso = (lance) => {
+        setAberto(false);
+        onLanceRegistrado?.(lance);
+    };
 
     return (
-        <div>
-            <h1>Lances</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Valor do Lance</th>
-                        <th>Data e Hora</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {lances.map(lance => (
-                        <tr key = {lance.id}>
-                            <td>{lance.id}</td>
-                            <td>{lance.valorLance}</td>
-                            <td>{lance.dataHora}</td>
-                        </tr>
-                    ))};
-                </tbody>
-            </table>
-        </div>
+        <>
+            <button
+                type="button"
+                className={`botao-lance ${className}`.trim()}
+                onClick={() => setAberto(true)}
+            >
+                Dar lance
+            </button>
+
+            {aberto && (
+                <LanceModal
+                    leilao={leilao}
+                    onFechar={() => setAberto(false)}
+                    onSucesso={handleSucesso}
+                />
+            )}
+        </>
     );
 }

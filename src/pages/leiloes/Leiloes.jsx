@@ -5,8 +5,11 @@ import "./Leiloes.css";
 import { API_BASE_URL } from "../../api/axiosInstance";
 import { formatarData, formatarValor } from "../../utils/format";
 import { Link, useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import Lance from "../../components/lance/Lance";
 
 export default function Leiloes() {
+    const { podeCriarLeilao, podeGerenciarLeilao, podeDarLance } = useAuth();
     const [leiloes, setLeiloes] = useState([]);
     const [busca, setBusca] = useState("");
     const [carregando, setCarregando] = useState(true);
@@ -64,6 +67,20 @@ export default function Leiloes() {
             });
     };
 
+    const handleLanceRegistrado = (lance) => {
+        setLeiloes((leiloesAtuais) =>
+            leiloesAtuais.map((leilao) =>
+                leilao.id === lance.leilaoId
+                    ? {
+                          ...leilao,
+                          maiorLance: lance.valorLance,
+                          totalLances: (leilao.totalLances || 0) + 1,
+                      }
+                    : leilao
+            )
+        );
+    };
+
     return (
         <div className="leiloes-page">
             <header className="leiloes-header">
@@ -76,9 +93,11 @@ export default function Leiloes() {
                         ← Início
                     </Link>
 
-                    <Link to="/leiloes/novo" className="botao-criar">
-                        + Criar leilão
-                    </Link>
+                    {podeCriarLeilao && (
+                        <Link to="/leiloes/novo" className="botao-criar">
+                            + Criar leilão
+                        </Link>
+                    )}
                 </div>
             </header>
 
@@ -131,12 +150,14 @@ export default function Leiloes() {
                                 resultado corresponde à sua busca.
                             </p>
 
-                            <Link
-                                to="/leiloes/novo"
-                                className="botao-criar vazio"
-                            >
-                                + Criar primeiro leilão
-                            </Link>
+                            {podeCriarLeilao && (
+                                <Link
+                                    to="/leiloes/novo"
+                                    className="botao-criar vazio"
+                                >
+                                    + Criar primeiro leilão
+                                </Link>
+                            )}
                         </div>
                     )}
 
@@ -207,12 +228,27 @@ export default function Leiloes() {
 
                                             <div className="leilao-valores">
                                                 <div>
-                                                    <span>Lance mínimo</span>
-                                                    <strong>
-                                                        {formatarValor(
-                                                            leilao.lanceMinimo
-                                                        )}
-                                                    </strong>
+                                                    {leilao.maiorLance != null ? (
+                                                        <>
+                                                            <span>
+                                                                Lance atual ({leilao.totalLances})
+                                                            </span>
+                                                            <strong>
+                                                                {formatarValor(
+                                                                    leilao.maiorLance
+                                                                )}
+                                                            </strong>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <span>Lance mínimo</span>
+                                                            <strong>
+                                                                {formatarValor(
+                                                                    leilao.lanceMinimo
+                                                                )}
+                                                            </strong>
+                                                        </>
+                                                    )}
                                                 </div>
 
                                                 <div>
@@ -233,17 +269,26 @@ export default function Leiloes() {
                                                     Ver detalhes
                                                 </Link>
 
-                                                <button
-                                                    className="botao-excluir"
-                                                    onClick={() =>
-                                                        handleDelete(
-                                                            leilao.id,
-                                                            leilao.titulo
-                                                        )
-                                                    }
-                                                >
-                                                    Excluir
-                                                </button>
+                                                {podeGerenciarLeilao(leilao) && (
+                                                    <button
+                                                        className="botao-excluir"
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                leilao.id,
+                                                                leilao.titulo
+                                                            )
+                                                        }
+                                                    >
+                                                        Excluir
+                                                    </button>
+                                                )}
+
+                                                {podeDarLance(leilao) && (
+                                                    <Lance
+                                                        leilao={leilao}
+                                                        onLanceRegistrado={handleLanceRegistrado}
+                                                    />
+                                                )}
                                             </div>
                                         </div>
                                     </article>

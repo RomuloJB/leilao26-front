@@ -25,8 +25,9 @@ export default function App() {
 
           {/* Rotas protegidas: só acessíveis após login */}
           <Route path="/leiloes/gado" element={<ProtectedRoute> <Leiloes/> </ProtectedRoute>}/>
-          <Route path="/leiloes/novo" element={<ProtectedRoute><NovoLeilao /></ProtectedRoute>} />
-          <Route path="/leiloes/:id/editar" element={<ProtectedRoute><NovoLeilao /></ProtectedRoute>} />
+          {/* Criar/editar leilão: só VENDEDOR ou ADMIN (a checagem de "é o dono" fica dentro do NovoLeilao) */}
+          <Route path="/leiloes/novo" element={<ProtectedRoute perfilExigido={["VENDEDOR", "ADMIN"]}><NovoLeilao /></ProtectedRoute>} />
+          <Route path="/leiloes/:id/editar" element={<ProtectedRoute perfilExigido={["VENDEDOR", "ADMIN"]}><NovoLeilao /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute> {/* <Admin /> */} <div>Área administrativa</div> </ProtectedRoute>}/>
           <Route path="/leiloes/:id" element={<ProtectedRoute> <LeilaoDetalhes/> </ProtectedRoute>}/>
           <Route path="/recuperar-senha" element={<RecuperarSenha />} />

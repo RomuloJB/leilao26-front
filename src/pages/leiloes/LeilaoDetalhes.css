@@ -50,8 +50,16 @@
     margin: 8px 0;
 }
 
+.leilao-detalhes-conteudo .leilao-valores {
+    grid-template-columns: repeat(3, 1fr);
+}
+
 @media (max-width: 720px) {
     .leilao-detalhes-container {
         grid-template-columns: 1fr;
+    }
+
+    .leilao-detalhes-conteudo .leilao-valores {
+        grid-template-columns: 1fr 1fr;
     }
 }

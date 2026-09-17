@@ -11,7 +11,7 @@ export default function NovoLeilao() {
     const { id } = useParams();
     const modoEdicao = Boolean(id);
     const navigate = useNavigate();
-    const { usuario } = useAuth();
+    const { podeGerenciarLeilao } = useAuth();
 
     const [categorias, setCategorias] = useState([]);
     const [carregandoCategorias, setCarregandoCategorias] = useState(true);
@@ -51,10 +51,8 @@ export default function NovoLeilao() {
         leilaoService.buscarPorId(id)
             .then((response) => {
                 const leilao = response.data;
-                const semPermissao =
-                    leilao.vendedorId !== usuario?.id && !usuario?.roles?.includes("ADMIN");
 
-                if (semPermissao) {
+                if (!podeGerenciarLeilao(leilao)) {
                     setErro("Você não tem permissão para editar este leilão.");
                     return;
                 }
@@ -78,7 +76,7 @@ export default function NovoLeilao() {
                 setErro("Não foi possível carregar o leilão.");
             })
             .finally(() => setCarregandoLeilao(false));
-    }, [id, modoEdicao, usuario]);
+    }, [id, modoEdicao, podeGerenciarLeilao]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;

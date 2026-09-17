@@ -1,9 +1,12 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-// Uso: <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+// Uso:
+//   <ProtectedRoute><Leiloes /></ProtectedRoute>                          -> qualquer usuário logado
+//   <ProtectedRoute perfilExigido="ADMIN">...</ProtectedRoute>            -> só ADMIN
+//   <ProtectedRoute perfilExigido={["VENDEDOR", "ADMIN"]}>...</ProtectedRoute> -> qualquer um dos dois
 export default function ProtectedRoute({ children, perfilExigido }) {
-  const { autenticado, carregando, usuario } = useAuth();
+  const { autenticado, carregando, temPerfil } = useAuth();
 
   if (carregando) {
     // Evita redirecionar pro login antes de terminar de checar o localStorage
@@ -14,8 +17,11 @@ export default function ProtectedRoute({ children, perfilExigido }) {
     return <Navigate to="/login" replace />;
   }
 
-  if (perfilExigido && !usuario?.roles?.includes(perfilExigido)) {
-    return <Navigate to="/" replace />;
+  if (perfilExigido) {
+    const perfisPermitidos = Array.isArray(perfilExigido) ? perfilExigido : [perfilExigido];
+    if (!perfisPermitidos.some(temPerfil)) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   return children;

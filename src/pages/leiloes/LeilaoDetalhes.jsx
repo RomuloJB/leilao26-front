@@ -6,6 +6,8 @@ import "./LeilaoDetalhes.css";
 import { useAuth } from "../../context/AuthContext";
 import { API_BASE_URL } from "../../api/axiosInstance";
 import { formatarData, formatarValor } from "../../utils/format";
+import Lance from "../../components/lance/Lance";
+import ListaLances from "../../components/lance/ListaLances";
 
 export default function LeilaoDetalhes() {
     const { id } = useParams();
@@ -14,9 +16,10 @@ export default function LeilaoDetalhes() {
     const [leilao, setLeilao] = useState(null);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState("");
+    const [versaoLances, setVersaoLances] = useState(0);
 
-    const { usuario } = useAuth();
-    const podeEditar = leilao && (leilao.vendedorId === usuario?.id || usuario?.roles?.includes("ADMIN"));
+    const { podeGerenciarLeilao, podeDarLance } = useAuth();
+    const podeEditar = podeGerenciarLeilao(leilao);
 
     useEffect(() => {
         leilaoService.buscarPorId(id)
@@ -37,6 +40,15 @@ export default function LeilaoDetalhes() {
         leilaoService.excluir(id)
             .then(() => navigate("/leiloes/gado"))
             .catch(() => alert("Não foi possível excluir o leilão."));
+    };
+
+    const handleLanceRegistrado = (lance) => {
+        setLeilao((atual) => ({
+            ...atual,
+            maiorLance: lance.valorLance,
+            totalLances: (atual.totalLances || 0) + 1,
+        }));
+        setVersaoLances((v) => v + 1);
     };
 
     if (carregando) {
@@ -106,6 +118,12 @@ export default function LeilaoDetalhes() {
                             <span>Incremento</span>
                             <strong>{formatarValor(leilao.valorIncremento)}</strong>
                         </div>
+                        <div>
+                            <span>Lance atual</span>
+                            <strong>
+                                {leilao.maiorLance != null ? formatarValor(leilao.maiorLance) : "Nenhum lance"}
+                            </strong>
+                        </div>
                     </div>
 
                     {leilao.categoriaNome && (
@@ -119,10 +137,17 @@ export default function LeilaoDetalhes() {
                         </div>
                     )}
 
+                    {podeDarLance(leilao) && (
+                        <div className="leilao-acoes">
+                            <Lance leilao={leilao} onLanceRegistrado={handleLanceRegistrado} />
+                        </div>
+                    )}
+
                     {leilao.observacao && (
                         <p className="leilao-observacao">Obs: {leilao.observacao}</p>
                     )}
 
+                    <ListaLances leilaoId={leilao.id} atualizacao={versaoLances} />
                 </div>
             </main>
         </div>

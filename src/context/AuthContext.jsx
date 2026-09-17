@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { login as loginService, cadastrar as cadastrarService } from '../services/authService';
 
 const AuthContext = createContext(null);
@@ -70,6 +70,43 @@ export function AuthProvider({ children }) {
     setUsuario(null);
   }
 
+  // ---- Permissões ----
+  // Regras centralizadas aqui pra não espalhar "usuario?.roles?.includes(...)" pelas páginas.
+  // Espelham o que o back-end valida em LeilaoController.verificarPermissao.
+
+  const temPerfil = useCallback(
+    (tipoPerfil) => usuario?.roles?.includes(tipoPerfil) ?? false,
+    [usuario]
+  );
+
+  const isAdmin = temPerfil('ADMIN');
+  const isVendedor = temPerfil('VENDEDOR');
+  const isComprador = temPerfil('COMPRADOR');
+
+  // Só vendedor ou admin podem criar leilões.
+  const podeCriarLeilao = isAdmin || isVendedor;
+
+  // Editar/excluir: admin pode tudo; vendedor só nos leilões que ele mesmo criou.
+  // useCallback pra função ser estável e poder entrar em deps de useEffect sem causar loop.
+  const podeGerenciarLeilao = useCallback(
+    (leilao) => {
+      if (!usuario || !leilao) return false;
+      if (isAdmin) return true;
+      return isVendedor && leilao.vendedorId === usuario.id;
+    },
+    [usuario, isAdmin, isVendedor]
+  );
+
+  // Dar lance: só COMPRADOR, e só em leilão que ainda aceita lances.
+  // (O back-end revalida tudo isso e ainda checa valor mínimo/incremento.)
+  const podeDarLance = useCallback(
+    (leilao) => {
+      if (!usuario || !leilao || !isComprador) return false;
+      return leilao.status !== 'ENCERRADO' && leilao.status !== 'CANCELADO';
+    },
+    [usuario, isComprador]
+  );
+
   const value = {
     usuario,
     autenticado: !!usuario,
@@ -77,6 +114,13 @@ export function AuthProvider({ children }) {
     login,
     cadastrar,
     logout,
+    temPerfil,
+    isAdmin,
+    isVendedor,
+    isComprador,
+    podeCriarLeilao,
+    podeGerenciarLeilao,
+    podeDarLance,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
