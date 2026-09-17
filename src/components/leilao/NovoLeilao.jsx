@@ -5,6 +5,7 @@ import categoriaService from "../../services/categoriaService";
 import leilaoService from "../../services/leilaoService";
 import imagemService from "../../services/imagemService";
 import { useAuth } from "../../context/AuthContext";
+import InputMoeda from "../InputMoeda";
 import "./NovoLeilao.css";
 
 export default function NovoLeilao() {
@@ -275,12 +276,12 @@ export default function NovoLeilao() {
                         <h2>Valores</h2>
                         <div className="form-grid">
                             <div className="form-grupo">
-                                <label htmlFor="lanceMinimo">Lance mínimo (R$) *</label>
-                                <input id="lanceMinimo" type="number" name="lanceMinimo" value={form.lanceMinimo} onChange={handleChange} min="0.01" step="0.01" />
+                                <label htmlFor="lanceMinimo">Lance mínimo *</label>
+                                <InputMoeda id="lanceMinimo" name="lanceMinimo" value={form.lanceMinimo} onChange={handleChange} />
                             </div>
                             <div className="form-grupo">
-                                <label htmlFor="valorIncremento">Incremento mínimo (R$) *</label>
-                                <input id="valorIncremento" type="number" name="valorIncremento" value={form.valorIncremento} onChange={handleChange} min="0.01" step="0.01" />
+                                <label htmlFor="valorIncremento">Incremento mínimo *</label>
+                                <InputMoeda id="valorIncremento" name="valorIncremento" value={form.valorIncremento} onChange={handleChange} />
                             </div>
                         </div>
                     </section>

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import lanceService from "../../services/lanceService";
 import { formatarValor } from "../../utils/format";
+import InputMoeda from "../InputMoeda";
 import "./Lance.css";
 
 export function calcularValorMinimoPermitido(leilao) {
@@ -13,7 +14,7 @@ export function calcularValorMinimoPermitido(leilao) {
 export default function LanceModal({ leilao, onFechar, onSucesso }) {
     const valorMinimoPermitido = calcularValorMinimoPermitido(leilao);
 
-    const [valor, setValor] = useState(valorMinimoPermitido.toFixed(2));
+    const [valor, setValor] = useState(valorMinimoPermitido);
     const [erro, setErro] = useState("");
     const [enviando, setEnviando] = useState(false);
     const inputRef = useRef(null);
@@ -34,7 +35,7 @@ export default function LanceModal({ leilao, onFechar, onSucesso }) {
         setErro("");
 
         const valorNumerico = Number(valor);
-        if (!valor || Number.isNaN(valorNumerico) || valorNumerico <= 0) {
+        if (valor === "" || Number.isNaN(valorNumerico) || valorNumerico <= 0) {
             setErro("Informe um valor de lance válido.");
             return;
         }
@@ -90,14 +91,11 @@ export default function LanceModal({ leilao, onFechar, onSucesso }) {
                 </dl>
 
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="lance-valor">Seu lance (R$)</label>
-                    <input
+                    <label htmlFor="lance-valor">Seu lance</label>
+                    <InputMoeda
                         id="lance-valor"
+                        name="valorLance"
                         ref={inputRef}
-                        type="number"
-                        inputMode="decimal"
-                        min={valorMinimoPermitido}
-                        step="0.01"
                         value={valor}
                         onChange={(event) => setValor(event.target.value)}
                         disabled={enviando}
