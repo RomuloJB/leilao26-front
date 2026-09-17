@@ -269,6 +269,16 @@
     background: #fff3f3;
 }
 
+/* Leilão ABERTO/EM_ANALISE não pode ser excluído (só ENCERRADO/CANCELADO) */
+.botao-excluir:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.botao-excluir:disabled:hover {
+    background: white;
+}
+
 .estado-pagina,
 .estado-vazio,
 .estado-erro {

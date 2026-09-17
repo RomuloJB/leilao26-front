@@ -9,7 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 import Lance from "../../components/lance/Lance";
 
 export default function Leiloes() {
-    const { podeCriarLeilao, podeGerenciarLeilao, podeDarLance } = useAuth();
+    const { podeCriarLeilao, podeGerenciarLeilao, podeExcluirLeilao, podeDarLance } = useAuth();
     const [leiloes, setLeiloes] = useState([]);
     const [busca, setBusca] = useState("");
     const [carregando, setCarregando] = useState(true);
@@ -63,7 +63,8 @@ export default function Leiloes() {
             })
             .catch((error) => {
                 console.error("Erro ao excluir leilão:", error);
-                alert("Não foi possível excluir o leilão.");
+                if (error.response?.status === 403) alert("Você não tem permissão para excluir este leilão.");
+                else alert(error.response?.data?.message || "Não foi possível excluir o leilão.");
             });
     };
 
@@ -272,6 +273,12 @@ export default function Leiloes() {
                                                 {podeGerenciarLeilao(leilao) && (
                                                     <button
                                                         className="botao-excluir"
+                                                        disabled={!podeExcluirLeilao(leilao)}
+                                                        title={
+                                                            podeExcluirLeilao(leilao)
+                                                                ? undefined
+                                                                : "Só é possível excluir leilões encerrados ou cancelados"
+                                                        }
                                                         onClick={() =>
                                                             handleDelete(
                                                                 leilao.id,

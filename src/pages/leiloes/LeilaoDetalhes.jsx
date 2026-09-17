@@ -18,8 +18,9 @@ export default function LeilaoDetalhes() {
     const [erro, setErro] = useState("");
     const [versaoLances, setVersaoLances] = useState(0);
 
-    const { podeGerenciarLeilao, podeDarLance } = useAuth();
+    const { podeGerenciarLeilao, podeExcluirLeilao, podeDarLance } = useAuth();
     const podeEditar = podeGerenciarLeilao(leilao);
+    const podeExcluir = podeExcluirLeilao(leilao);
 
     useEffect(() => {
         leilaoService.buscarPorId(id)
@@ -39,7 +40,11 @@ export default function LeilaoDetalhes() {
 
         leilaoService.excluir(id)
             .then(() => navigate("/leiloes/gado"))
-            .catch(() => alert("Não foi possível excluir o leilão."));
+            .catch((error) => {
+                console.error("Erro ao excluir leilão:", error);
+                if (error.response?.status === 403) alert("Você não tem permissão para excluir este leilão.");
+                else alert(error.response?.data?.message || "Não foi possível excluir o leilão.");
+            });
     };
 
     const handleLanceRegistrado = (lance) => {
@@ -133,7 +138,14 @@ export default function LeilaoDetalhes() {
                     {podeEditar && (
                         <div className="leilao-acoes">
                             <Link to={`/leiloes/${id}/editar`} className="botao-detalhes">Editar leilão</Link>
-                            <button className="botao-excluir" onClick={handleDelete}>Excluir leilão</button>
+                            <button
+                                className="botao-excluir"
+                                disabled={!podeExcluir}
+                                title={podeExcluir ? undefined : "Só é possível excluir leilões encerrados ou cancelados"}
+                                onClick={handleDelete}
+                            >
+                                Excluir leilão
+                            </button>
                         </div>
                     )}
 

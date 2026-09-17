@@ -97,6 +97,17 @@ export function AuthProvider({ children }) {
     [usuario, isAdmin, isVendedor]
   );
 
+  // Excluir tem uma regra a mais: o leilão precisa estar ENCERRADO ou CANCELADO.
+  // Vale pro admin também — leilão aberto tem que ser cancelado/encerrado antes.
+  // (O back-end revalida em LeilaoService.excluirLeilao.)
+  const podeExcluirLeilao = useCallback(
+    (leilao) => {
+      if (!podeGerenciarLeilao(leilao)) return false;
+      return leilao.status === 'ENCERRADO' || leilao.status === 'CANCELADO';
+    },
+    [podeGerenciarLeilao]
+  );
+
   // Dar lance: só COMPRADOR, e só em leilão que ainda aceita lances.
   // (O back-end revalida tudo isso e ainda checa valor mínimo/incremento.)
   const podeDarLance = useCallback(
@@ -120,6 +131,7 @@ export function AuthProvider({ children }) {
     isComprador,
     podeCriarLeilao,
     podeGerenciarLeilao,
+    podeExcluirLeilao,
     podeDarLance,
   };
 
