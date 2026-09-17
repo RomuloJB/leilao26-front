@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import categoriaService from '../../services/categoriaService';
+import Header from '../../components/header/Header';
+import Footer from '../../components/footer/Footer';
 import './Home.css';
 
 export default function Home() {
-  const { autenticado, usuario, logout } = useAuth();
+  const { usuario } = useAuth();
   const [categorias, setCategorias] = useState([]);
   const [carregandoCategorias, setCarregandoCategorias] = useState(true);
 
@@ -23,19 +25,7 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      <header className="home-header">
-        <span className="home-logo">FarmAuction</span>
-        <nav className="home-nav">
-          {autenticado ? (
-            <div className="home-usuario">
-              <span className="home-usuario-nome">Olá, {usuario?.username}</span>
-              <button className="home-botao-sair" onClick={logout} type="button">Sair</button>
-            </div>
-          ) : (
-            <Link className="home-botao-entrar" to="/login">Entrar</Link>
-          )}
-        </nav>
-      </header>
+      <Header />
 
       <main className="home-conteudo">
         <section className="bem-vindo">
@@ -73,6 +63,8 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

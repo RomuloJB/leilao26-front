@@ -1,0 +1,63 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  background: #218b1d;
+}
+
+.header-logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+}
+
+.header-botao-entrar {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 22px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #d0e6cf;
+  background: #0b3d13;
+  text-decoration: none;
+  transition: filter 0.15s ease;
+}
+
+.header-botao-entrar:hover {
+  filter: brightness(1.05);
+}
+
+.header-usuario {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-usuario-nome {
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.header-botao-sair {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.header-botao-sair:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
