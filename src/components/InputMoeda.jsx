@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { formatarValor } from "../utils/format";
 
 const MAX_DIGITOS = 15;
@@ -6,7 +6,7 @@ const MAX_DIGITOS = 15;
 // Input com máscara "R$ 1.000,00". Os dígitos digitados são tratados como centavos.
 // `value` é um número (ou "" quando vazio) e onChange recebe { target: { name, value } }
 // com value numérico, pra funcionar com o handleChange padrão dos formulários.
-const InputMoeda = forwardRef(function InputMoeda({ name, value, onChange, ...props }, ref) {
+export default function InputMoeda({ name, value, onChange, ...props }) {
     const exibido = value === "" || value == null ? "" : formatarValor(value);
 
     const handleChange = (event) => {
@@ -18,7 +18,6 @@ const InputMoeda = forwardRef(function InputMoeda({ name, value, onChange, ...pr
     return (
         <input
             {...props}
-            ref={ref}
             name={name}
             type="text"
             inputMode="numeric"
@@ -27,6 +26,4 @@ const InputMoeda = forwardRef(function InputMoeda({ name, value, onChange, ...pr
             onChange={handleChange}
         />
     );
-});
-
-export default InputMoeda;
+}
